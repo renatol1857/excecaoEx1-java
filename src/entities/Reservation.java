@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exception.renatoException;
+
 public class Reservation {
 		private Integer roomNumber;
 		private Date checkIn,checkOut;
@@ -18,7 +20,9 @@ public class Reservation {
 			
 		}
 
-		public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+		public Reservation(Integer roomNumber, Date checkIn, Date checkOut) throws renatoException {
+			if(checkOut.before(checkIn)) 
+				throw new renatoException("Check-out date must be after check-in date");
 			this.roomNumber = roomNumber;
 			this.checkIn = checkIn;
 			this.checkOut = checkOut;
@@ -58,19 +62,18 @@ public class Reservation {
 		}
 		
 		/*****************************
-		 * Atualiza as datas de entrada e saida da se
+		 * Atualiza as datas de entrada e saida da reserva
 		 * @param checkIn
 		 * @param checkOut
 		 *****************************/
-		public String updateDates (Date checkIn, Date checkOut) {
+		public void updateDates (Date checkIn, Date checkOut) throws renatoException {
 			Date dateNow = new Date(); // captura data atual.
 			if(checkIn.before(dateNow) || checkOut.before(dateNow)) 
-				 return "Reservation dates for update must be future dates.";
+				 throw new IllegalArgumentException("Reservation dates for update must be future dates.");
 			if(checkOut.before(checkIn)) 
-				return "Check-out date must be after check-in date";
+				throw new renatoException("Check-out date must be after check-in date");
 			this.checkIn = checkIn;
 			this.checkOut = checkOut;
-			return null;
 		}
 
 		@Override
